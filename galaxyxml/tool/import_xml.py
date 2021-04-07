@@ -709,12 +709,9 @@ class TestsParser(object):
         test_root.append(
             gxtp.TestOutputCollection(
                 name=output_root.attrib.get("name", None),
-                file=output_root.attrib.get("file", None),
                 ftype=output_root.attrib.get("ftype", None),
                 sort=output_root.attrib.get("sort", None),
                 value=output_root.attrib.get("value", None),
-                md5=output_root.attrib.get("md5", None),
-                checksum=output_root.attrib.get("checksum", None),
                 compare=output_root.attrib.get("compare", None),
                 lines_diff=output_root.attrib.get("lines_diff", None),
                 delta=output_root.attrib.get("delta", None),
@@ -731,13 +728,13 @@ class TestsParser(object):
         """
 
         repeat = gxtp.TestRepeat(
-                repeat_root.attrib.get("name", None),
-                repeat_root.attrib.get("title",None),
-                min=repeat_root.attrib.get("min", None),
-                max=repeat_root.attrib.get("max", None),
-                default=repeat_root.attrib.get("default", None)
-            )
-       # Deal with child nodes
+            repeat_root.attrib.get("name", None),
+            repeat_root.attrib.get("title",None),
+            min=repeat_root.attrib.get("min", None),
+            max=repeat_root.attrib.get("max", None),
+            default=repeat_root.attrib.get("default", None)
+        )
+        # Deal with child nodes
         self.load_inputs(repeat, repeat_root)
         root.append(repeat)
 
@@ -753,7 +750,7 @@ class TestsParser(object):
             try:
                 getattr(self, "_load_{}".format(rep_child.tag))(repeat, rep_child)
             except AttributeError:
-                logger.warning(inp_child.tag + " tag is not processed for <" + repeat_root.tag + "> tag.")
+                logger.warning(rep_child.tag + " tag is not processed for <" + repeat_root.tag + "> tag.")
 
     def load_tests(self, root, tests_root):
         """
