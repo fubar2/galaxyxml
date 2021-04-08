@@ -181,7 +181,6 @@ class TestOutputsParser(TestImport):
         self.assertEqual(collection[0].attrib["visible"], "false")
         self.assertEqual(collection[0].attrib["directory"], "Res")
 
-
 class TestTestsParser(TestImport):
     def test_load_param(self):
         param = self.tool.tests.children[0].node[0]
@@ -206,9 +205,15 @@ class TestTestsParser(TestImport):
         # test output within repeat
         output = self.tool.tests.children[0].node[4]
         self.assertEqual(output.attrib["name"],"output_repeat")
-        self.assertEqual(output[0].attrib["file"], "outputchild")
-        self.assertEqual(output[0].attrib["name"], "bar")
+        contents = output[0]
+        self.assertEqual(contents.attrib["file"], "outputchild")
+        self.assertEqual(contents.attrib["name"], "bar")
         # test outputcollection within repeat - who knows...
         output = self.tool.tests.children[0].node[5]
         self.assertEqual(output.attrib["name"],"collection_repeat")
-        self.assertEqual(output[0].attrib["name"], "collectionchild")
+        contents = output[0]
+        self.assertEqual(contents.attrib["name"],"collectionchild")
+        elem = contents[0]
+        self.assertEqual(elem.attrib["name"], "zot")
+        self.assertEqual(elem.attrib["file"], "atestcollectionfile")
+        self.assertEqual(elem.attrib["ftype"], "txt")

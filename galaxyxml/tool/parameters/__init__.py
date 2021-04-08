@@ -814,6 +814,12 @@ class ChangeFormatWhen(XMLParam):
     def acceptable_child(self, child):
         return False
 
+class OutputCollectionElement(XMLParam):
+    name = "element"
+
+    def __init__(self, name=None, file=None, ftype=None, **kwargs):
+        params = Util.clean_kwargs(locals().copy())
+        super(OutputCollectionElement, self).__init__(**params)
 
 class OutputCollection(XMLParam):
     name = "collection"
@@ -833,10 +839,20 @@ class OutputCollection(XMLParam):
         super(OutputCollection, self).__init__(**params)
 
     def acceptable_child(self, child):
-        return isinstance(child, OutputData) or isinstance(child, OutputFilter) or isinstance(child, DiscoverDatasets)
+        return isinstance(child, OutputCollectionElement) \
+            or isinstance(child, DiscoverDatasets)
 
-    def command_line(self, mako_path):
-        return "## TODO CLI for OutputCollection %s" % self.name
+    def command_line_before(self, mako_path):
+        return "<collection name = '%s'>" % self.name
+
+    def command_line_after(self):
+        return "</collection>"
+
+    def command_line_actual(self, mako_path):
+        lines = []
+        for c in self.children:
+            lines.append(c.command_line())
+        return "\n".join(lines)
 
 class DiscoverDatasets(XMLParam):
     name = "discover_datasets"
@@ -872,7 +888,6 @@ class TestParam(XMLParam):
         params = Util.clean_kwargs(locals().copy())
         super(TestParam, self).__init__(**params)
 
-
 class TestOutput(XMLParam):
     name = "output"
 
@@ -893,6 +908,12 @@ class TestOutput(XMLParam):
         params = Util.clean_kwargs(locals().copy())
         super(TestOutput, self).__init__(**params)
 
+class TestOCElement(XMLParam):
+    name = "element"
+
+    def __init__(self, name=None, file=None, ftype=None, **kwargs):
+        params = Util.clean_kwargs(locals().copy())
+        super(TestOCElement, self).__init__(**params)
 
 class TestOutputCollection(XMLParam):
     name = "output_collection"
@@ -911,6 +932,9 @@ class TestOutputCollection(XMLParam):
         params = Util.clean_kwargs(locals().copy())
         super(TestOutputCollection, self).__init__(**params)
 
+    def acceptable_child(self, child):
+        return isinstance(child, TestOCElement)
+
     def command_line_before(self, mako_path):
         return "<output_collection name = '%s'>" % self.name
 
@@ -918,8 +942,10 @@ class TestOutputCollection(XMLParam):
         return "</output_collection>"
 
     def command_line_actual(self, mako_path):
-
-        return ""
+        lines = []
+        for child in self.children:
+            lines.append(child.command_line())
+        return "\n".join(lines)
 
 class TestRepeat(XMLParam):
     name = "repeat"

@@ -79,7 +79,9 @@
           <output file="outputchild" name="bar"/>
       </repeat>
       <repeat name="collection_repeat">
-          <output_collection name="collectionchild"/>
+          <output_collection name="collectionchild">
+              <element name="zot" file="atestcollectionfile" ftype="txt"/>
+          </output_collection>
       </repeat>
       </test>
   </tests>
